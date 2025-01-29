@@ -1,38 +1,12 @@
 ---
 global:
-  pattern: multicluster-devsecops
-
-  cicd:
-    namespace: devsecops-ci
-
+  pattern: multicloud-gitops
   options:
     useCSV: false
     syncPolicy: Automatic
     installPlanApproval: Automatic
-
-  secure-registry:
-    namespace: "openshift-storage"
-
-  imageregistry:
-    account: PLAINTEXT
-    hostname: quay.io
-    type: quay
-
-  git:
-    hostname: github.com
-    account: PLAINTEXT
-    username: PLAINTEXT
-    email: SOMEWHERE@EXAMPLE.COM
-    dev_revision: main
-
-  quay:
-    # Needs to be set consistently between hub and spoke clusters
-    # TODO: Move back to the hub chart, store in a configmap, have an ACM policy distribute to spoke clusters, have spoke look up from configmap
-    org:
-      name: devel
-      email: devel@myorg.com
-    repo: example
-  opp: false
-
 main:
   clusterGroupName: hub
+  multiSourceConfig:
+    enabled: true
+    clusterGroupChartVersion: "0.9.*"

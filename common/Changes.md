@@ -1,5 +1,51 @@
 # Changes
 
+## Sep 24, 2024
+
+* Ansible has been moved out of the common code tree, you must use a clustergroup chart that is >= 0.9.1
+
+## Sep 6, 2024
+
+* Most charts have been removed from the tree. To get the charts you now have to point to them
+
+## Sep 25, 2023
+
+* Upgraded ESO to v0.9.5
+
+## Aug 17, 2023
+
+* Introduced support for multisource applications via .chart + .chartVersion
+
+## Jul 8, 2023
+
+* Introduced a default of 20 for sync failures retries in argo applications (global override via global.options.applicationRetryLimit
+  and per-app override via .syncPolicy)
+
+## May 22, 2023
+
+* Upgraded ESO to 0.8.2
+* *Important* we now use the newly blessed sso config for argo. This means that gitops < 1.8 are *unsupported*
+
+## May 18, 2023
+
+* Introduce a EXTRA_HELM_OPTS env variable that will be passed to the helm invocations
+
+## April 21, 2023
+
+* Added labels and annotation support to namespaces.yaml template
+
+## Apr 11, 2023
+
+* Apply the ACM ocp-gitops-policy everywhere but the hub
+
+## Apr 7, 2023
+
+* Moved to gitops-1.8 channel by default (stable is unmaintained and will be dropped starting with ocp-4.13)
+
+## March 20, 2023
+
+* Upgraded ESO to 0.8.1
+
 ## February 9, 2023
 
 * Add support for /values-<platform>.yaml and for /values-<platform>-<clusterversion>.yaml
@@ -86,7 +132,7 @@
 ## October 3, 2022
 
 * Restore the ability to install a non-default site: `make TARGET_SITE=mysite install`
-* Revised tests (new output and filenames, requires adding new result files to git)
+* Revised tests (new output and filenames, requires adding new result files to Git)
 * ACM 2.6 required for ACM-based managed sites
 * Introduced global.clusterDomain template variable (without the `apps.` prefix)
 * Removed the ability to send specific charts to another cluster, use hosted argo sites instead

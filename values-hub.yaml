@@ -1,125 +1,76 @@
 clusterGroup:
   name: hub
   isHubCluster: true
-
-# Namespaces that are expected to be created.
-# The pattern will apply these namespaces
-# and creates an operator group for that namespace
   namespaces:
-  - open-cluster-management
-  - vault
-  - golang-external-secrets
-  - rhacs-operator
-  - stackrox
-  - policies
-  - devsecops-ci
-  - openshift-storage
-  - quay-enterprise
-
-#  subscriptions:  OpenShift Operator subscriptions from OLM/OperatorHub
-#  - name: the Operator package name (required)
-#    namespace: expected namespace as specified by Operator (defaults to openshift-operators)
-#    channel: operator channel from package manifest (required)
-#    csv: Operator CSV from package manifest.
-#         only used if global.options.useCSV: true in values-global.yaml
-
+    - open-cluster-management
+    - vault
+    - golang-external-secrets
+    - config-demo
+    - hello-world
   subscriptions:
-# If specific channels are required then uncomment channel line and add the name of the channel
     acm:
       name: advanced-cluster-management
       namespace: open-cluster-management
-
-    acs:
-      name: rhacs-operator  #packageName
-      namespace: openshift-operators # operator namespace
-
-    odf:
-      name: odf-operator
-      namespace: openshift-storage
-
-    quay:
-      name: quay-operator
-      namespace: openshift-operators
-
-# The following section is used by
-# OpenShift GitOps (ArgoCD)
-# Projects are just ArgoCD groupings that can be filtered on.
+      channel: release-2.11
+      #csv: advanced-cluster-management.v2.6.1
   projects:
-  - hub
-  - opp
-  - external-secrets
+    - hub
+    - config-demo
+    - hello-world
+  # Explicitly mention the cluster-state based overrides we plan to use for this pattern.
+  # We can use self-referential variables because the chart calls the tpl function with these variables defined
+  sharedValueFiles:
+    - '/overrides/values-{{ $.Values.global.clusterPlatform }}.yaml'
+  # sharedValueFiles is a flexible mechanism that will add the listed valuefiles to every app defined in the
+  # applications section. We intend this to supplement and possibly even replace previous "magic" mechanisms, though
+  # we do not at present have a target date for removal.
+  #
+  # To replicate the "classic" magic include structure, the clusterGroup would need all of these
+  # sharedValueFiles, in this order:
+  #   - '/overrides/values-{{ $.Values.global.clusterPlatform }}.yaml'
+  #   - '/overrides/values-{{ $.Values.global.clusterPlatform }}-{{ $.Values.global.clusterVersion }}.yaml'
+  #   - '/overrides/values-{{ $.Values.global.clusterPlatform }}-{{ $.Values.clusterGroup.name }}.yaml'
+  #   - '/overrides/values-{{ $.Values.global.clusterVersion }}-{{ $.Values.clusterGroup.name }}.yaml"
+  #   - '/overrides/values-{{ $.Values.global.localClusterName }}.yaml'
 
+  # This kind of variable substitution will work with any of the variables the Validated Patterns operator knows
+  # about and sets, so this is also possible, for example:
+  #   - '/overrides/values-{{ $.Values.global.hubClusterDomain }}.yaml'
+  #   - '/overrides/values-{{ $.Values.global.localClusterDomain }}.yaml'
   applications:
     acm:
-      name: acm   #arbitary
+      name: acm
       namespace: open-cluster-management
-      project: opp
-      path: common/acm
+      project: hub
+      chart: acm
+      chartVersion: 0.1.*
       ignoreDifferences:
-      - group: internal.open-cluster-management.io
-        kind: ManagedClusterInfo
-        jsonPointers:
-          - /spec/loggingCA
-
-    acs-central:
-      name: acs-central
-      namespace: stackrox
-      project: opp
-      path: charts/hub/acs/central
-
-    acs-secured:
-      name: acs-secured
-      namespace: stackrox
-      project: opp
-      path: charts/hub/acs/secured
-
-    storage:
-      name: storage
-      namespace: openshift-storage
-      project: opp
-      path: charts/hub/odf
-
-    quay-registry:
-      name: quay-registry
-      namespace: quay-enterprise
-      project: opp
-      path: charts/hub/quay
-
-    opp-policy:
-      name: opp-policy
-      namespace: openshift
-      project: opp
-      path: charts/hub/opp
-      ignoreDifferences:
-      - group: operators.openshift.io
-        kind: Console
-        jsonPointers: 
-          - /spec/plugins
-
+        - group: internal.open-cluster-management.io
+          kind: ManagedClusterInfo
+          jsonPointers:
+            - /spec/loggingCA
     vault:
       name: vault
       namespace: vault
       project: hub
-      path: common/hashicorp-vault
-
+      chart: hashicorp-vault
+      chartVersion: 0.1.*
     golang-external-secrets:
       name: golang-external-secrets
       namespace: golang-external-secrets
-      project: external-secrets
-      path: common/golang-external-secrets
-
-    external-secrets:
-      name: external-secrets
-      namespace: devsecops-ci
-      project: external-secrets
-      path: charts/hub/external-secrets
-
-    cli-tools:
-      name: cli-tools
-      namespace: openshift
       project: hub
-      path: charts/hub/cli-tools
-
+      chart: golang-external-secrets
+      chartVersion: 0.1.*
+    config-demo:
+      name: config-demo
+      namespace: config-demo
+      project: config-demo
+      path: charts/all/config-demo
+    hello-world:
+      name: hello-world
+      namespace: hello-world
+      project: hello-world
+      path: charts/all/hello-world
   imperative:
     # NOTE: We *must* use lists and not hashes. As hashes lose ordering once parsed by helm
     # The default schedule is every 10 minutes: imperative.schedule
@@ -128,51 +79,93 @@ clusterGroup:
     # For additional overrides that apply to the jobs, please refer to
     # https://hybrid-cloud-patterns.io/imperative-actions/#additional-job-customizations
     jobs:
-    - name: regional-ca
-      # ansible playbook to be run
-      playbook: ansible/playbooks/on-hub-get-regional-ca.yml
-      # per playbook timeout in seconds
-      timeout: 234
-      # verbosity: "-v"
-
-# This section is used by ACM
+      - name: hello-world
+        # ansible playbook to be run
+        playbook: rhvp.cluster_utils.hello_world
+        # per playbook timeout in seconds
+        timeout: 234
+        # verbosity: "-v"
   managedClusterGroups:
-  - name: development
-    helmOverrides:
-    - name: clusterGroup.isHubCluster
-      value: "false"
-    clusterSelector:
-      matchLabels:
-        clusterGroup: devel
-      matchExpressions:
-      - key: vendor
-        operator: In
-        values:
-          - OpenShift
-
-  - name: production
-    helmOverrides:
-    - name: clusterGroup.isHubCluster
-      value: "false"
-    clusterSelector:
-      matchLabels:
-        clusterGroup: prod
-      matchExpressions:
-      - key: vendor
-        operator: In
-        values:
-          - OpenShift
-
+    exampleRegion:
+      name: group-one
+      acmlabels:
+        - name: clusterGroup
+          value: group-one
+      helmOverrides:
+        - name: clusterGroup.isHubCluster
+          value: false
+          # Before enabling cluster provisioning, ensure AWS and/or Azure
+          #   credentials and OCP pull secrets are defined in Vault.
+          #   See values-secret.yaml.template
+          #
+          #clusterPools:
+          #  exampleAWSPool:
+          #    name: aws-ap
+          #    openshiftVersion: 4.10.18
+          #    baseDomain: blueprints.rhecoeng.com
+          #    platform:
+          #      aws:
+          #        region: ap-southeast-2
+          #    clusters:
+          #    - One
+          #
+          #  exampleAzurePool:
+          #    name: azure-us
+          #    openshiftVersion: 4.10.18
+          #    baseDomain: blueprints.rhecoeng.com
+          #    platform:
+          #      azure:
+          #        baseDomainResourceGroupName: dojo-dns-zones
+          #        region: eastus
+          #    clusters:
+          #    - Two
+          #    - Three
+#  To have apps in multiple flavors, use namespaces and use helm overrides as appropriate
+#
+#    pipelines:
+#      name: pipelines
+#      namespace: production
+#      project: datacenter
+#      path: applications/pipeline
+#      repoURL: https://github.com/you/applications.git
+#      targetRevision: stable
+#      overrides:
+#      - name: myparam
+#        value: myparam
+#
+#    pipelines_staging:
+#    - name: pipelines
+#      namespace: staging
+#      project: datacenter
+#      path: applications/pipeline
+#      repoURL: https://github.com/you/applications.git
+#      targetRevision: main
 #
 #   Additional applications
 #   Be sure to include additional resources your apps will require
 #   +X machines
 #   +Y RAM
 #   +Z CPU
-#  - name: vendor-app
-#    namespace: default
-#    project: vendor
-#    path: path/to/myapp
-#    repoURL: https://github.com/vendor/applications.git
-#    targetRevision: main
+#    vendor-app:
+#      name: vendor-app
+#      namespace: default
+#      project: vendor
+#      path: path/to/myapp
+#      repoURL: https://github.com/vendor/applications.git
+#      targetRevision: main
 
+#  managedSites:
+#    factory:
+#      name: factory
+#      # repoURL: https://github.com/dagger-refuse-cool/manuela-factory.git
+#      targetRevision: main
+#      path: applications/factory
+#      helmOverrides:
+#      - name: site.isHubCluster
+#        value: false
+#      clusterSelector:
+#        matchExpressions:
+#        - key: vendor
+#          operator: In
+#          values:
+#            - OpenShift

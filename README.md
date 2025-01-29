@@ -1,36 +1,19 @@
-# Multicluster Devsecops
+# Multicloud Gitops
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+[Live build status](https://validatedpatterns.io/ci/?pattern=mcgitops)
 
 ## Start Here
 
 If you've followed a link to this repository, but are not really sure what it contains
-or how to use it, head over to [Multicluster Devsecops](https://hybrid-cloud-patterns.io/devsecops/)
+or how to use it, head over to [Multicloud GitOps](https://validatedpatterns.io/patterns/multicloud-gitops/)
 for additional context and installation instructions
 
-## Cluster requirements
+## Rationale
 
-This pattern depends on having three clusters.
+The goal for this pattern is to:
 
-* Central Hub - where all the infrastructure components run.
-  * Red Hat Advanced Cluster Management
-  * Red Hat Advanced Cluster Security (Central)
-  * Red Hat Quay Enterprise
-  * Secrets management
-* Development - where CI/CD pipelines and testing run
-  * Red Hat OpenShift Pipelines
-  * Red Hat OpenShift GitOps
-  * Red Hat Advanced Cluster Security (Secured)
-* Production - where the applications run
-
-It can be modified to run everything in a single cluster. Components of `values-development.yaml` and `values-production.yaml` would need to be merged into `values-hub.yaml` where applicable. *Use caution*. In the future the pattern may be enhanced to combine into a single cluster.
-
-## Products/projects used
-
-* Red Hat OpenShift GitOps
-* Red Hat Advanced Cluster Management
-* Red Hat Advanced Cluster Security
-* Red Hat Open Data Foundation
-* Red Hat Quay
-* Red Hat OpenShift Pipelines
-* Hashicorp Vault (Community)
+* Use a GitOps approach to manage hybrid and multi-cloud deployments across both public and private clouds.
+* Enable cross-cluster governance and application lifecycle management.
+* Securely manage secrets across the deployment.
