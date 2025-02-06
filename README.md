@@ -4,11 +4,11 @@
 
 [Live build status](https://validatedpatterns.io/ci/?pattern=mcgitops)
 
-## Start Here
+## Project Scope
 
 The goal of this pattern is to be able to easily consume pieces that apply to our products to assist customers to move from traditional to an optimal ZTA maturity.  The first step is to build the scenarios and then be apply to apply a scenario or set of scenarios to the overall pattern.
 
-## Rationale
+## Project Rationale
 
 The goal for this pattern is to:
 
