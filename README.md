@@ -1,4 +1,4 @@
-# Multicloud Gitops
+# Zero Trust Validated Pattern with Scenarios
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
@@ -6,14 +6,12 @@
 
 ## Start Here
 
-If you've followed a link to this repository, but are not really sure what it contains
-or how to use it, head over to [Multicloud GitOps](https://validatedpatterns.io/patterns/multicloud-gitops/)
-for additional context and installation instructions
+The goal of this pattern is to be able to easily consume pieces that apply to our products to assist customers to move from traditional to an optimal ZTA maturity.  The first step is to build the scenarios and then be apply to apply a scenario or set of scenarios to the overall pattern.
 
 ## Rationale
 
 The goal for this pattern is to:
 
-* Use a GitOps approach to manage hybrid and multi-cloud deployments across both public and private clouds.
-* Enable cross-cluster governance and application lifecycle management.
-* Securely manage secrets across the deployment.
+* Show that ZTA is not to complex to addopt
+* Show how to move through the ZTA maturity levels
+* Provide examples and scenarios to test and demonstrate
