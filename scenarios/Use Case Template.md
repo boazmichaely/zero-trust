@@ -58,6 +58,9 @@ This template provides a structured way to document use cases for the Zero Trust
 **Example**:  
 *By implementing Zero Trust, all service-to-service communication is authenticated and encrypted, and network policies enforce least-privilege access.*
 
+## Type of customer or industry (optional)
+*Identify the type of customer or industry where this use case is appliacble (Finance / Healthcare / Gov / Telco etc). Skip if this is applicable to everyone*
+
 ---
 
 # Example Use Case: Multi-Tenant SaaS Application
@@ -82,6 +85,10 @@ This template provides a structured way to document use cases for the Zero Trust
 
 ## How Zero Trust Addresses the Issues
 *Zero Trust ensures that all communication between tenants and shared services is authenticated and authorized. Network policies enforce strict isolation, and mutual TLS (mTLS) encrypts all traffic.*
+
+## Type of customer or industry
+1. A Telco who manages a mult cluster environment for multiple vendors using ACM Hub
+2. Large Enterprise managing infrastructure for internal tenants
 
 ---
 
