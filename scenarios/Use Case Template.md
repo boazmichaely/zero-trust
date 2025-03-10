@@ -60,37 +60,34 @@ This template provides a structured way to document use cases for the Zero Trust
 
 ---
 
-## Example Use Case: Multi-Tenant SaaS Application
+# Example Use Case: Multi-Tenant SaaS Application
 
-### Persona
+## Persona
 *As a Security Architect...*
 
-### Goal
+## Goal
 *I want to secure a multi-tenant SaaS application running on OpenShift.*
 
-### Why
+## Why
 *Without Zero Trust, a compromised tenant could potentially access another tenant’s data, leading to a data breach and regulatory penalties.*
 
-### Environment
+## Environment
 *The application is hosted on an OpenShift cluster with multiple tenants. Each tenant has its own namespace, but some shared services (e.g., databases) are used across tenants.*
 
-### Workflows
+## Workflows
 *Tenants onboard through a self-service portal, and their workloads are deployed in isolated namespaces. Shared services are accessed via APIs.*
 
-### Security Issues
+## Security Issues
 *Currently, there is no enforcement of tenant isolation at the network level, and shared services rely on IP-based access control.*
 
-### How Zero Trust Addresses the Issues
+## How Zero Trust Addresses the Issues
 *Zero Trust ensures that all communication between tenants and shared services is authenticated and authorized. Network policies enforce strict isolation, and mutual TLS (mTLS) encrypts all traffic.*
 
 ---
 
-## How to Use This Template
+# How to Use This Template
 1. Copy this template for each new use case.
 2. Replace the example content with details specific to the use case you're documenting.
 3. Save the file with a descriptive name (e.g., `multi-tenant-saas.md`) in the `scenarios` folder.
 4. Link the use case to relevant scenarios in the repository.
 
----
-
-**Note**: This template is a starting point. Feel free to adapt it to better fit the needs of your project!
